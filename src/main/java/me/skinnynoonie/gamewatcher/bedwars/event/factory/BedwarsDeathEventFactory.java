@@ -8,14 +8,14 @@ public final class BedwarsDeathEventFactory implements BedwarsEventFactory<Bedwa
     @Override
     public BedwarsDeathEvent from(String chatMessage, BedwarsContext context) {
         try {
-            String[] messageSplit = chatMessage.split(" ");
+            String[] messageSplit = chatMessage.replace(".", "").replace(" FINAL KILL!", "").split(" ");
 
             String victim = messageSplit[0];
             if (!context.getPlayers().contains(victim)) {
                 return null;
             }
 
-            String possibleAttacker = messageSplit[messageSplit.length - 1].replace(".", "");
+            String possibleAttacker = messageSplit[messageSplit.length - 1];
             if (!context.getPlayers().contains(possibleAttacker)) {
                 possibleAttacker = null;
             }

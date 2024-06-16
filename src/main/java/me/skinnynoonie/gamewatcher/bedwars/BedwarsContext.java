@@ -2,25 +2,27 @@ package me.skinnynoonie.gamewatcher.bedwars;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public final class BedwarsContext {
 
     public static BedwarsContext createDefault() {
-        return new BedwarsContext(new ArrayList<>());
+        return new BedwarsContext(new HashSet<>());
     }
 
-    private final List<String> players;
+    private final Set<String> players;
 
-    public BedwarsContext(List<String> players) {
-        this.players = new ArrayList<>(players);
+    public BedwarsContext(Set<String> players) {
+        this.players = new HashSet<>(players);
     }
 
-    public List<String> getPlayers() {
-        return Collections.unmodifiableList(this.players);
+    public Set<String> getPlayers() {
+        return Collections.unmodifiableSet(this.players);
     }
 
-    public void setPlayers(List<String> players) {
+    public void setPlayers(Set<String> players) {
         this.players.clear();
         this.players.addAll(players);
     }

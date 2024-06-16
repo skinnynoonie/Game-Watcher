@@ -2,17 +2,18 @@ package me.skinnynoonie.gamewatcher.bedwars.event;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public final class BedwarsPlayerListEvent extends BedwarsEvent {
 
-    private final List<String> players;
+    private final Set<String> players;
 
-    public BedwarsPlayerListEvent(List<String> players) {
+    public BedwarsPlayerListEvent(Set<String> players) {
         this.players = players;
     }
 
-    public List<String> getPlayers() {
-        return Collections.unmodifiableList(this.players);
+    public Set<String> getPlayers() {
+        return Collections.unmodifiableSet(this.players);
     }
 
 }

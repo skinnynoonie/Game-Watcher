@@ -3,6 +3,7 @@ package me.skinnynoonie.gamewatcher.util;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.AbstractQueue;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -17,9 +18,16 @@ public final class PriorityQueueV2<E> extends AbstractQueue<E> implements Queue<
         this.baseQueue = new PriorityQueue<>();
     }
 
+    public void add(E e, int priority) {
+       this.baseQueue.add(new PriorityContainer<>(e, priority));
+    }
+
     @Override
     public @NotNull Iterator<E> iterator() {
-        Iterator<PriorityContainer<E>> baseIterator = this.baseQueue.iterator();
+        @SuppressWarnings("unchecked")
+        PriorityContainer<E>[] naturalOrderArray = this.baseQueue.toArray(PriorityContainer[]::new);
+        Arrays.sort(naturalOrderArray);
+        Iterator<PriorityContainer<E>> baseIterator = Arrays.stream(naturalOrderArray).iterator();
         return new Iterator<>() {
             @Override
             public boolean hasNext() {
@@ -38,9 +46,13 @@ public final class PriorityQueueV2<E> extends AbstractQueue<E> implements Queue<
         return this.baseQueue.size();
     }
 
+    public boolean offer(E e, int priority) {
+        return this.baseQueue.offer(new PriorityContainer<>(e, priority));
+    }
+
     @Override
-    public boolean offer(E t) {
-        return this.baseQueue.offer(new PriorityContainer<>(t, this.defaultPriority));
+    public boolean offer(E e) {
+        return this.offer(e, this.defaultPriority);
     }
 
     @Override

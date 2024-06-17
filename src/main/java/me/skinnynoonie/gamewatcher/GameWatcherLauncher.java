@@ -2,9 +2,9 @@ package me.skinnynoonie.gamewatcher;
 
 import me.skinnynoonie.gamewatcher.bedwars.BedwarsEventBus;
 import me.skinnynoonie.gamewatcher.bedwars.event.BedwarsDeathEvent;
+import me.skinnynoonie.gamewatcher.bedwars.event.BedwarsPlayerListEvent;
 import me.skinnynoonie.gamewatcher.bedwars.event.BedwarsQueueJoinEvent;
 import me.skinnynoonie.gamewatcher.bedwars.event.BedwarsQueueLeaveEvent;
-import me.skinnynoonie.gamewatcher.bedwars.event.BedwarsPlayerListEvent;
 import me.skinnynoonie.gamewatcher.minecraft.MinecraftChatReader;
 
 public final class GameWatcherLauncher {

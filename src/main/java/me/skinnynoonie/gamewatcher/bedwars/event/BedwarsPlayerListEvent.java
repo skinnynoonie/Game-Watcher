@@ -1,7 +1,6 @@
 package me.skinnynoonie.gamewatcher.bedwars.event;
 
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 public final class BedwarsPlayerListEvent extends BedwarsEvent {

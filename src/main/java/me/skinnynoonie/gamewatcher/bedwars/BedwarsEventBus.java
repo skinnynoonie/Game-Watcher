@@ -5,10 +5,12 @@ import me.skinnynoonie.gamewatcher.bedwars.event.BedwarsQueueJoinEvent;
 import me.skinnynoonie.gamewatcher.bedwars.event.BedwarsQueueLeaveEvent;
 import me.skinnynoonie.gamewatcher.bedwars.event.BedwarsPlayerListEvent;
 import me.skinnynoonie.gamewatcher.bedwars.event.factory.BedwarsDeathEventFactory;
+import me.skinnynoonie.gamewatcher.bedwars.event.factory.BedwarsDisconnectEventFactory;
 import me.skinnynoonie.gamewatcher.bedwars.event.factory.BedwarsEventFactory;
 import me.skinnynoonie.gamewatcher.bedwars.event.factory.BedwarsQueueJoinEventFactory;
 import me.skinnynoonie.gamewatcher.bedwars.event.factory.BedwarsQueueLeaveEventFactory;
 import me.skinnynoonie.gamewatcher.bedwars.event.factory.BedwarsPlayerListEventFactory;
+import me.skinnynoonie.gamewatcher.bedwars.event.factory.BedwarsReconnectEventFactory;
 import me.skinnynoonie.gamewatcher.minecraft.MinecraftChatReader;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,6 +38,8 @@ public final class BedwarsEventBus {
         this.registerEventFactory(new BedwarsQueueJoinEventFactory());
         this.registerEventFactory(new BedwarsQueueLeaveEventFactory());
         this.registerEventFactory(new BedwarsPlayerListEventFactory());
+        this.registerEventFactory(new BedwarsDisconnectEventFactory());
+        this.registerEventFactory(new BedwarsReconnectEventFactory());
         this.registerEventFactory(new BedwarsDeathEventFactory(), Integer.MAX_VALUE);
 
         this.subscribe(BedwarsQueueJoinEvent.class, event -> {
@@ -52,6 +56,19 @@ public final class BedwarsEventBus {
         });
     }
 
+    public void init() {
+        this.registerEventFactory(new BedwarsQueueJoinEventFactory());
+        this.registerEventFactory(new BedwarsQueueLeaveEventFactory());
+        this.registerEventFactory(new BedwarsPlayerListEventFactory());
+        this.registerEventFactory(new BedwarsDisconnectEventFactory());
+        this.registerEventFactory(new BedwarsReconnectEventFactory());
+        this.registerEventFactory(new BedwarsDeathEventFactory(), Integer.MAX_VALUE);
+
+        this.subscribe(BedwarsQueueJoinEvent.class, event -> this.context.addPlayer(event.getPlayer()));
+        this.subscribe(BedwarsQueueLeaveEvent.class, event -> this.context.addPlayer(event.getPlayer()));
+        this.subscribe(BedwarsPlayerListEvent.class, event -> this.context.setPlayers(event.getPlayers()));
+    }
+
     public <T extends BedwarsEvent> void subscribe(Class<T> eventClass, Consumer<T> eventConsumer) {
         this.subscribers.add(event -> {
             if (eventClass.isInstance(event)) {
@@ -60,7 +77,7 @@ public final class BedwarsEventBus {
         });
     }
 
-    public void reset() {
+    public void refresh() {
         this.context.setPlayers(Collections.emptySet());
         this.chatReader.skip();
     }
@@ -100,12 +117,12 @@ public final class BedwarsEventBus {
         }
     }
 
-    public void registerEventFactory(BedwarsEventFactory<?> bedwarsEventFactory) {
-        this.eventFactories.add(new ComparableBedwarsEventFactoryContainer(bedwarsEventFactory, 50));
-    }
-
     public void registerEventFactory(BedwarsEventFactory<?> bedwarsEventFactory, int priority) {
         this.eventFactories.add(new ComparableBedwarsEventFactoryContainer(bedwarsEventFactory, priority));
+    }
+
+    public void registerEventFactory(BedwarsEventFactory<?> bedwarsEventFactory) {
+        this.eventFactories.add(new ComparableBedwarsEventFactoryContainer(bedwarsEventFactory, 50));
     }
 
     private static class ComparableBedwarsEventFactoryContainer implements Comparable<ComparableBedwarsEventFactoryContainer> {

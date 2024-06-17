@@ -11,7 +11,8 @@ public final class GameWatcherLauncher {
 
     public static void main(String[] args) throws Exception {
         BedwarsEventBus eventBus = new BedwarsEventBus(MinecraftChatReader.fromPath("C:\\Users\\skinn\\AppData\\Roaming\\.minecraft\\logs\\blclient\\minecraft\\latest.log"));
-        eventBus.reset();
+        eventBus.init();
+        eventBus.refresh();
 
         eventBus.subscribe(BedwarsQueueJoinEvent.class, event -> {
             System.out.println(event.getPlayer() + " has joined");

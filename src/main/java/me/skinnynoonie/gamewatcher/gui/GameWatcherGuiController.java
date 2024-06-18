@@ -1,22 +1,32 @@
 package me.skinnynoonie.gamewatcher.gui;
 
 import javafx.application.Platform;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import me.skinnynoonie.gamewatcher.config.LogPathConfig;
+import me.skinnynoonie.gamewatcher.config.loader.ConfigLoader;
 import me.skinnynoonie.gamewatcher.watcher.GameWatcher;
 import me.skinnynoonie.gamewatcher.watcher.GameWatcherUserInfo;
 
-import java.nio.file.Path;
-import java.text.DecimalFormat;
+import java.io.File;
 import java.util.Map;
 
 public final class GameWatcherGuiController {
+
+    private final Stage stage;
+
+    private final ConfigLoader configLoader;
+    private LogPathConfig config;
 
     private GameWatcher gameWatcher;
     private final ObservableList<GameWatcherUserInfoProperties> gameWatcherData = FXCollections.observableArrayList();
@@ -26,77 +36,96 @@ public final class GameWatcherGuiController {
     @FXML private TableColumn<GameWatcherUserInfoProperties, Integer> killsColumn;
     @FXML private TableColumn<GameWatcherUserInfoProperties, Integer> deathsColumn;
     @FXML private TableColumn<GameWatcherUserInfoProperties, Double> kdColumn;
+    @FXML private Button pathButton;
 
-    public GameWatcherGuiController() {
-        this.gameWatcher = GameWatcher.fromPath(Path.of("C:\\Users\\skinn\\AppData\\Roaming\\.minecraft\\logs\\blclient\\minecraft\\latest.log"));
+    public GameWatcherGuiController(Stage stage, ConfigLoader configLoader) {
+        this.stage = stage;
+        this.configLoader = configLoader;
     }
 
+    @FXML
     public void initialize() {
+        this.setUpConfigLoaderAndConfig();
+        this.setUpGameWatcher();
+        this.setUpGui();
+        this.stage.setOnCloseRequest(this::onClose);
+
+        new Thread(() -> {
+            while (true) {
+                Platform.runLater(() -> {
+                    if (this.gameWatcher != null) {
+                        this.gameWatcher.update();
+                    }
+                });
+
+                this.sleep(20);
+            }
+        }).start();
+    }
+
+    public void setUpConfigLoaderAndConfig() {
+        this.configLoader.init();
+        if (this.configLoader.isSaved("config")) {
+            this.config = this.configLoader.load("config", LogPathConfig.class);
+        } else {
+            this.config = new LogPathConfig(null);
+            this.configLoader.save("config", this.config);
+        }
+    }
+
+    private void setUpGameWatcher() {
+        if (this.gameWatcher != null) {
+            this.gameWatcher.dispose();
+            this.gameWatcher = null;
+        }
+
+        if (!this.config.isValid()) {
+            return;
+        }
+
+        this.gameWatcher = GameWatcher.fromPath(this.config.getPath());
         this.gameWatcher.init();
 
+        this.gameWatcher.onUpdate(() -> {
+            Map<String, GameWatcherUserInfo> userInfoMap = this.gameWatcher.getUserInfoMap();
+            this.updateGameWatcherData(userInfoMap);
+        });
+    }
+
+    private void updateGameWatcherData(Map<String, GameWatcherUserInfo> userInfoMap) {
+        this.gameWatcherData.clear();
+        userInfoMap.forEach((username, data) -> {
+            GameWatcherUserInfoProperties userInfoProperties = GameWatcherUserInfoProperties.fromGameWatcherInfo(username, data);
+            this.gameWatcherData.add(userInfoProperties);
+        });
+    }
+
+    private void setUpGui() {
         this.usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
         this.killsColumn.setCellValueFactory(new PropertyValueFactory<>("kills"));
         this.deathsColumn.setCellValueFactory(new PropertyValueFactory<>("deaths"));
         this.kdColumn.setCellValueFactory(new PropertyValueFactory<>("kd"));
         this.trackerTableView.setItems(this.gameWatcherData);
-
-        this.gameWatcher.onUpdate(() -> {
-            this.gameWatcherData.clear();
-
-            Map<String, GameWatcherUserInfo> userInfoMap = this.gameWatcher.getUserInfoMap();
-            for (String username : userInfoMap.keySet()) {
-                GameWatcherUserInfo gameWatcherUserInfo = userInfoMap.get(username);
-                GameWatcherUserInfoProperties userInfo = new GameWatcherUserInfoProperties(
-                        username,
-                        gameWatcherUserInfo.getKills(),
-                        gameWatcherUserInfo.getDeaths()
-                );
-                this.gameWatcherData.add(userInfo);
-            }
-        });
-
-        new Thread(() -> {
-            while (true) {
-                Platform.runLater(this.gameWatcher::update);
-
-                try {
-                    Thread.sleep(20);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+        this.pathButton.setOnMouseReleased(this::onPathButton);
     }
 
-    public static class GameWatcherUserInfoProperties {
-        private final SimpleStringProperty username;
-        private final SimpleIntegerProperty kills;
-        private final SimpleIntegerProperty deaths;
-        private final SimpleStringProperty kd;
-
-        public GameWatcherUserInfoProperties(String username, int kills, int deaths) {
-            this.username = new SimpleStringProperty(username);
-            this.kills = new SimpleIntegerProperty(kills);
-            this.deaths = new SimpleIntegerProperty(deaths);
-
-            String decimalFormatKd = new DecimalFormat("0.0").format(kills / Math.max(1.0, deaths));
-            this.kd = new SimpleStringProperty(decimalFormatKd);
+    private void onPathButton(MouseEvent event) {
+        File selectedDir = new FileChooser().showOpenDialog(this.stage);
+        if (selectedDir != null) {
+            this.config.setPath(selectedDir.getPath());
+            this.setUpGameWatcher();
         }
+    }
 
-        public String getUsername() {
-            return username.get();
-        }
+    private void onClose(WindowEvent event) {
+        this.configLoader.save("config", this.config);
+    }
 
-        public int getKills() {
-            return kills.get();
-        }
-
-        public int getDeaths() {
-            return deaths.get();
-        }
-
-        public String getKd() {
-            return kd.get();
+    private void sleep(long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 

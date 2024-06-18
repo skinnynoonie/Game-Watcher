@@ -119,6 +119,7 @@ public final class GameWatcherGuiController {
 
     private void onClose(WindowEvent event) {
         this.configLoader.save("config", this.config);
+        System.exit(1);
     }
 
     private void sleep(long millis) {

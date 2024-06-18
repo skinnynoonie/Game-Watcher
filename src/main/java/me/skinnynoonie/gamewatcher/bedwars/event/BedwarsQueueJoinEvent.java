@@ -1,14 +1,19 @@
 package me.skinnynoonie.gamewatcher.bedwars.event;
 
+import me.skinnynoonie.gamewatcher.util.Checks;
+import org.jetbrains.annotations.NotNull;
+
 public final class BedwarsQueueJoinEvent extends BedwarsEvent {
 
     private final String player;
 
-    public BedwarsQueueJoinEvent(String player) {
+    public BedwarsQueueJoinEvent(@NotNull String player) {
+        Checks.notNullArg(player, "player");
+
         this.player = player;
     }
 
-    public String getPlayer() {
+    public @NotNull String getPlayer() {
         return this.player;
     }
 

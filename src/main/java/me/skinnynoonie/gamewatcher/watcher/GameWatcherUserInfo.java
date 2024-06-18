@@ -1,8 +1,10 @@
 package me.skinnynoonie.gamewatcher.watcher;
 
+import org.jetbrains.annotations.NotNull;
+
 public final class GameWatcherUserInfo {
 
-    public static GameWatcherUserInfo createDefault() {
+    public static @NotNull GameWatcherUserInfo createDefault() {
         return new GameWatcherUserInfo(0, 0);
     }
 

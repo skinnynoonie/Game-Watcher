@@ -14,7 +14,9 @@ import me.skinnynoonie.gamewatcher.bedwars.event.factory.BedwarsQueueLeaveEventF
 import me.skinnynoonie.gamewatcher.bedwars.event.factory.BedwarsReconnectEventFactory;
 import me.skinnynoonie.gamewatcher.bedwars.event.factory.BedwarsTeamPurchaseEventFactory;
 import me.skinnynoonie.gamewatcher.minecraft.MinecraftChatReader;
+import me.skinnynoonie.gamewatcher.util.Checks;
 import me.skinnynoonie.gamewatcher.util.PriorityQueueV2;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,9 +28,11 @@ public final class BedwarsEventBus {
     private final MinecraftChatReader chatReader;
     private final List<Consumer<BedwarsEvent>> subscribers;
     private final PriorityQueueV2<BedwarsEventFactory<?>> eventFactories;
-    private BedwarsContext context;
+    private final BedwarsContext context;
 
-    public BedwarsEventBus(MinecraftChatReader chatReader) {
+    public BedwarsEventBus(@NotNull MinecraftChatReader chatReader) {
+        Checks.notNullArg(chatReader, "chatReader");
+
         this.chatReader = chatReader;
         this.subscribers = new ArrayList<>();
         this.eventFactories = new PriorityQueueV2<>(50);
@@ -46,7 +50,7 @@ public final class BedwarsEventBus {
         this.registerEventFactory(new BedwarsDeathEventFactory(), Integer.MAX_VALUE);
 
         this.subscribe(BedwarsQueueJoinEvent.class, event -> this.context.addPlayer(event.getPlayer()));
-        this.subscribe(BedwarsQueueLeaveEvent.class, event -> this.context.addPlayer(event.getPlayer()));
+        this.subscribe(BedwarsQueueLeaveEvent.class, event -> this.context.removePlayer(event.getPlayer()));
         this.subscribe(BedwarsPlayerListEvent.class, event -> this.context.setPlayers(event.getPlayers()));
     }
 
@@ -56,7 +60,10 @@ public final class BedwarsEventBus {
         this.eventFactories.clear();
     }
 
-    public <T extends BedwarsEvent> void subscribe(Class<T> eventClass, Consumer<T> eventConsumer) {
+    public <T extends BedwarsEvent> void subscribe(@NotNull Class<T> eventClass, @NotNull Consumer<@NotNull T> eventConsumer) {
+        Checks.notNullArg(eventClass, "eventClass");
+        Checks.notNullArg(eventConsumer, "eventConsumer");
+
         this.subscribers.add(event -> {
             if (eventClass.isInstance(event)) {
                 eventConsumer.accept(eventClass.cast(event));
@@ -87,7 +94,9 @@ public final class BedwarsEventBus {
         }
     }
 
-    public void dispatch(BedwarsEvent event) {
+    public void dispatch(@NotNull BedwarsEvent event) {
+        Checks.notNullArg(event, "event");
+
         for (Consumer<BedwarsEvent> subscriber : this.subscribers) {
             try {
                 subscriber.accept(event);
@@ -97,11 +106,15 @@ public final class BedwarsEventBus {
         }
     }
 
-    public void registerEventFactory(BedwarsEventFactory<?> bedwarsEventFactory, int priority) {
+    public void registerEventFactory(@NotNull BedwarsEventFactory<?> bedwarsEventFactory, int priority) {
+        Checks.notNullArg(bedwarsEventFactory, "bedwarsEventFactory");
+
         this.eventFactories.add(bedwarsEventFactory, priority);
     }
 
-    public void registerEventFactory(BedwarsEventFactory<?> bedwarsEventFactory) {
+    public void registerEventFactory(@NotNull BedwarsEventFactory<?> bedwarsEventFactory) {
+        Checks.notNullArg(bedwarsEventFactory, "bedwarsEventFactory");
+
         this.eventFactories.add(bedwarsEventFactory);
     }
 

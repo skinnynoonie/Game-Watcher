@@ -6,6 +6,8 @@ import me.skinnynoonie.gamewatcher.bedwars.event.BedwarsPlayerListEvent;
 import me.skinnynoonie.gamewatcher.bedwars.event.BedwarsQueueJoinEvent;
 import me.skinnynoonie.gamewatcher.bedwars.event.BedwarsQueueLeaveEvent;
 import me.skinnynoonie.gamewatcher.minecraft.MinecraftChatReader;
+import me.skinnynoonie.gamewatcher.util.Checks;
+import org.jetbrains.annotations.NotNull;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -16,7 +18,9 @@ import java.util.Map;
 
 public final class GameWatcher {
 
-    public static GameWatcher fromPath(Path pathToLogFile) {
+    public static @NotNull GameWatcher fromPath(@NotNull Path pathToLogFile) {
+        Checks.notNullArg(pathToLogFile, "pathToLogFile");
+
         BedwarsEventBus eventBus = new BedwarsEventBus(MinecraftChatReader.fromPath(pathToLogFile));
         return new GameWatcher(eventBus);
     }
@@ -25,7 +29,9 @@ public final class GameWatcher {
     private final Map<String, GameWatcherUserInfo> userInfoMap;
     private final List<Runnable> onUpdateSubscribers;
 
-    public GameWatcher(BedwarsEventBus bedwarsEventBus) {
+    public GameWatcher(@NotNull BedwarsEventBus bedwarsEventBus) {
+        Checks.notNullArg(bedwarsEventBus, "bedwarsEventBus");
+
         this.bedwarsEventBus = bedwarsEventBus;
         this.userInfoMap = new HashMap<>();
         this.onUpdateSubscribers = new ArrayList<>();
@@ -55,7 +61,6 @@ public final class GameWatcher {
             if (event.getAttacker() != null) {
                 this.userInfoMap.get(event.getAttacker()).incrementKills();
             }
-
             this.dispatchUpdate();
         });
     }
@@ -76,7 +81,9 @@ public final class GameWatcher {
         this.dispatchUpdate();
     }
 
-    public void onUpdate(Runnable runnable) {
+    public void onUpdate(@NotNull Runnable runnable) {
+        Checks.notNullArg(runnable, "runnable");
+
         this.onUpdateSubscribers.add(runnable);
     }
 
@@ -90,7 +97,7 @@ public final class GameWatcher {
         }
     }
 
-    public Map<String, GameWatcherUserInfo> getUserInfoMap() {
+    public @NotNull Map<@NotNull String, @NotNull GameWatcherUserInfo> getUserInfoMap() {
         return Collections.unmodifiableMap(this.userInfoMap);
     }
 

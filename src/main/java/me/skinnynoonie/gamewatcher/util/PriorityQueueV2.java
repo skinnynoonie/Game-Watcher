@@ -1,6 +1,7 @@
 package me.skinnynoonie.gamewatcher.util;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.AbstractQueue;
 import java.util.Arrays;
@@ -10,7 +11,7 @@ import java.util.Queue;
 
 public final class PriorityQueueV2<E> extends AbstractQueue<E> implements Queue<E> {
 
-    private final Queue<PriorityContainer<E>> baseQueue;
+    private final PriorityQueue<PriorityContainer<E>> baseQueue;
     private final int defaultPriority;
 
     public PriorityQueueV2(int defaultPriority) {
@@ -18,7 +19,7 @@ public final class PriorityQueueV2<E> extends AbstractQueue<E> implements Queue<
         this.baseQueue = new PriorityQueue<>();
     }
 
-    public void add(E e, int priority) {
+    public void add(@Nullable E e, int priority) {
        this.baseQueue.add(new PriorityContainer<>(e, priority));
     }
 
@@ -46,23 +47,19 @@ public final class PriorityQueueV2<E> extends AbstractQueue<E> implements Queue<
         return this.baseQueue.size();
     }
 
-    public boolean offer(E e, int priority) {
-        return this.baseQueue.offer(new PriorityContainer<>(e, priority));
+    @Override
+    public boolean offer(@Nullable E e) {
+        return this.baseQueue.offer(new PriorityContainer<>(e, this.defaultPriority));
     }
 
     @Override
-    public boolean offer(E e) {
-        return this.offer(e, this.defaultPriority);
-    }
-
-    @Override
-    public E poll() {
+    public @Nullable E poll() {
         PriorityContainer<E> poll = this.baseQueue.poll();
         return poll != null ? poll.getElement() : null;
     }
 
     @Override
-    public E peek() {
+    public @Nullable E peek() {
         PriorityContainer<E> peak = this.baseQueue.peek();
         return peak != null ? peak.getElement() : null;
     }

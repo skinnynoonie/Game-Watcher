@@ -1,5 +1,4 @@
 package me.skinnynoonie.gamewatcher.bedwars.event;
 
-public class BedwarsFillerEvent extends BedwarsEvent {
-
+public final class BedwarsFillerEvent extends BedwarsEvent {
 }

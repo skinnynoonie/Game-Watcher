@@ -25,25 +25,24 @@ public final class GameWatcherUserInfoProperties {
         this.username = new SimpleStringProperty(username);
         this.kills = new SimpleIntegerProperty(kills);
         this.deaths = new SimpleIntegerProperty(deaths);
-
         String decimalFormatKd = new DecimalFormat("0.0").format(kills / Math.max(1.0, deaths));
         this.kd = new SimpleStringProperty(decimalFormatKd);
     }
 
     public String getUsername() {
-        return username.get();
+        return this.username.get();
     }
 
     public int getKills() {
-        return kills.get();
+        return this.kills.get();
     }
 
     public int getDeaths() {
-        return deaths.get();
+        return this.deaths.get();
     }
 
     public String getKd() {
-        return kd.get();
+        return this.kd.get();
     }
 
 }

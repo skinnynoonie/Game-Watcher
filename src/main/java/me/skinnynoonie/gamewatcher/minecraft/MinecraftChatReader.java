@@ -1,5 +1,7 @@
 package me.skinnynoonie.gamewatcher.minecraft;
 
+import me.skinnynoonie.gamewatcher.util.Checks;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
@@ -11,7 +13,9 @@ import java.util.regex.Pattern;
 
 public final class MinecraftChatReader {
 
-    public static MinecraftChatReader fromPath(Path pathToLogFile) {
+    public static MinecraftChatReader fromPath(@NotNull Path pathToLogFile) {
+        Checks.notNullArg(pathToLogFile, "pathToLogFile");
+
         try {
             return new MinecraftChatReader(Files.newBufferedReader(pathToLogFile, StandardCharsets.ISO_8859_1));
         } catch (IOException e) {
@@ -19,13 +23,15 @@ public final class MinecraftChatReader {
         }
     }
 
-    public static MinecraftChatReader fromPath(String pathToLogFile) {
+    public static MinecraftChatReader fromPath(@NotNull String pathToLogFile) {
         return fromPath(Path.of(pathToLogFile));
     }
 
     private final BufferedReader chatReader;
 
-    public MinecraftChatReader(BufferedReader chatReader) {
+    public MinecraftChatReader(@NotNull BufferedReader chatReader) {
+        Checks.notNullArg(chatReader, "chatReader");
+
         this.chatReader = chatReader;
     }
 

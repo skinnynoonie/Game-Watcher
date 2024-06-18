@@ -1,14 +1,19 @@
 package me.skinnynoonie.gamewatcher.bedwars.event;
 
-public class BedwarsReconnectEvent extends BedwarsEvent {
+import me.skinnynoonie.gamewatcher.util.Checks;
+import org.jetbrains.annotations.NotNull;
 
-    private final String username;
+public final class BedwarsReconnectEvent extends BedwarsEvent {
 
-    public BedwarsReconnectEvent(String username) {
+    private final @NotNull String username;
+
+    public BedwarsReconnectEvent(@NotNull String username) {
+        Checks.notNullArg(username, "username");
+
         this.username = username;
     }
 
-    public String getUsername() {
+    public @NotNull String getUsername() {
         return this.username;
     }
 

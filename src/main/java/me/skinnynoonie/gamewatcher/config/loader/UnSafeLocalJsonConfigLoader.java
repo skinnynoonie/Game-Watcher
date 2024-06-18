@@ -17,7 +17,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public final class UnSafeLocalJsonConfigLoader implements ConfigLoader {
 
-    public static UnSafeLocalJsonConfigLoader withPath(@NotNull Path pathToConfigFolder) {
+    public static @NotNull UnSafeLocalJsonConfigLoader withPath(@NotNull Path pathToConfigFolder) {
         Gson defaultGson = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().serializeNulls().create();
         return new UnSafeLocalJsonConfigLoader(pathToConfigFolder, defaultGson);
     }

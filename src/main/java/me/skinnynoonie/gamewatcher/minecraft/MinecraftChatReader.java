@@ -60,4 +60,12 @@ public final class MinecraftChatReader {
         }
     }
 
+    public void dispose() {
+        try {
+            this.chatReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

@@ -26,7 +26,7 @@ public final class BedwarsEventBus {
     private final MinecraftChatReader chatReader;
     private final List<Consumer<BedwarsEvent>> subscribers;
     private final PriorityQueueV2<BedwarsEventFactory<?>> eventFactories;
-    private final BedwarsContext context;
+    private BedwarsContext context;
 
     public BedwarsEventBus(MinecraftChatReader chatReader) {
         this.chatReader = chatReader;
@@ -48,6 +48,12 @@ public final class BedwarsEventBus {
         this.subscribe(BedwarsQueueJoinEvent.class, event -> this.context.addPlayer(event.getPlayer()));
         this.subscribe(BedwarsQueueLeaveEvent.class, event -> this.context.addPlayer(event.getPlayer()));
         this.subscribe(BedwarsPlayerListEvent.class, event -> this.context.setPlayers(event.getPlayers()));
+    }
+
+    public void dispose() {
+        this.chatReader.dispose();
+        this.subscribers.clear();
+        this.eventFactories.clear();
     }
 
     public <T extends BedwarsEvent> void subscribe(Class<T> eventClass, Consumer<T> eventConsumer) {

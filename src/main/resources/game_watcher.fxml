@@ -5,14 +5,14 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="474.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="474.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.skinnynoonie.gamewatcher.gui.GameWatcherGuiController">
     <Button fx:id="resetButton" layoutX="381.0" layoutY="185.0" mnemonicParsing="false" text="Reset" />
-    <TableView layoutX="14.0" layoutY="19.0" prefHeight="362.0" prefWidth="320.0" style="-fx-background-color: #71797E;">
+    <TableView fx:id="trackerTableView" layoutX="14.0" layoutY="19.0" prefHeight="362.0" prefWidth="340.0" style="-fx-background-color: #71797E;">
       <columns>
-          <TableColumn fx:id="usernameColumn" editable="false" resizable="false" sortable="false" text="Username" />
-          <TableColumn fx:id="killsColumn" editable="false" resizable="false" sortable="false" text="Kills" />
-          <TableColumn fx:id="deathsColumn" editable="false" resizable="false" sortable="false" text="Deaths" />
-          <TableColumn fx:id="kdColumn" editable="false" resizable="false" sortable="false" text="K/D" />
+          <TableColumn fx:id="usernameColumn" editable="false" prefWidth="130.0" resizable="false" sortable="false" text="Username" />
+          <TableColumn fx:id="killsColumn" editable="false" prefWidth="70.0" resizable="false" sortable="false" text="Kills" />
+          <TableColumn fx:id="deathsColumn" editable="false" prefWidth="70.0" resizable="false" sortable="false" text="Deaths" />
+          <TableColumn fx:id="kdColumn" editable="false" prefWidth="70.0" resizable="false" sortable="false" text="K/D" />
       </columns>
         <columnResizePolicy>
           <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

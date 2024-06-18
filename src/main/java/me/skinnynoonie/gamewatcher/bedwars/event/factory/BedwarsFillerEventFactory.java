@@ -12,6 +12,11 @@ public class BedwarsFillerEventFactory implements BedwarsEventFactory<BedwarsFil
             return new BedwarsFillerEvent();
         }
 
+        String afkRegex = "^\\w+ was kicked for being AFK!$";
+        if (chatMessage.matches(afkRegex)) {
+            return new BedwarsFillerEvent();
+        }
+
         return null;
     }
 

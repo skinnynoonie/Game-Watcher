@@ -1,24 +1,12 @@
 package me.skinnynoonie.gamewatcher;
 
-import me.skinnynoonie.gamewatcher.watcher.GameWatcher;
-
-import java.nio.file.Path;
+import javafx.application.Application;
+import me.skinnynoonie.gamewatcher.gui.GameWatcherGui;
 
 public final class GameWatcherLauncher {
 
-    public static void main(String[] args) throws Exception {
-        GameWatcher gameWatcher = GameWatcher.fromPath(Path.of("C:\\Users\\skinn\\AppData\\Roaming\\.minecraft\\logs\\blclient\\minecraft\\latest.log"));
-        gameWatcher.init();
-
-        gameWatcher.onUpdate(() -> {
-            System.out.println(gameWatcher.getUserInfoMap());
-        });
-
-        while (true) {
-            gameWatcher.update();
-            Thread.sleep(20);
-        }
-
+    public static void main(String[] args) {
+        Application.launch(GameWatcherGui.class);
     }
 
 }

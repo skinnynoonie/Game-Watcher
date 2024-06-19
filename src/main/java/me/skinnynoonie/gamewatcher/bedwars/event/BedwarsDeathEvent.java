@@ -11,7 +11,6 @@ public final class BedwarsDeathEvent extends BedwarsEvent {
 
     public BedwarsDeathEvent(@NotNull String victim, @Nullable String attacker) {
         Checks.notNullArg(victim, "victim");
-        Checks.notNullArg(attacker, "attacker");
 
         this.victim = victim;
         this.attacker = attacker;

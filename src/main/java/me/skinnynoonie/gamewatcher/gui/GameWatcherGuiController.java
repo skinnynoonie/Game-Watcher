@@ -101,9 +101,17 @@ public final class GameWatcherGuiController {
 
     private void setUpGui() {
         this.usernameColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
+        this.usernameColumn.setReorderable(false);
+
         this.killsColumn.setCellValueFactory(new PropertyValueFactory<>("kills"));
+        this.killsColumn.setReorderable(false);
+
         this.deathsColumn.setCellValueFactory(new PropertyValueFactory<>("deaths"));
+        this.deathsColumn.setReorderable(false);
+
         this.kdColumn.setCellValueFactory(new PropertyValueFactory<>("kd"));
+        this.kdColumn.setReorderable(false);
+
         this.trackerTableView.setItems(this.gameWatcherData);
         this.pathButton.setOnMouseReleased(this::onPathButton);
     }

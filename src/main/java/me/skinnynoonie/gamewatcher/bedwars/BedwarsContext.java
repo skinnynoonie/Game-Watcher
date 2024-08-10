@@ -1,6 +1,6 @@
 package me.skinnynoonie.gamewatcher.bedwars;
 
-import me.skinnynoonie.gamewatcher.util.Checks;
+import me.skinnynoonie.gamewatcher.util.Arguments;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -25,21 +25,21 @@ public final class BedwarsContext {
     }
 
     public void setPlayers(@NotNull Set<@NotNull String> players) {
-        Checks.notNullArg(players, "players");
-        Checks.noNullElementsArg(players, "players");
+        Arguments.notNull(players, "players");
+        Arguments.notNullElements(players, "players");
 
         this.players.clear();
         this.players.addAll(players);
     }
 
     public void addPlayer(@NotNull String player) {
-        Checks.notNullArg(player, "player");
+        Arguments.notNull(player, "player");
 
         this.players.add(player);
     }
 
     public void removePlayer(@NotNull String player) {
-        Checks.notNullArg(player, "player");
+        Arguments.notNull(player, "player");
 
         this.players.remove(player);
     }

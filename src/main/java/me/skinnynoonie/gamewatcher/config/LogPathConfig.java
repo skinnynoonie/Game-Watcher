@@ -1,6 +1,6 @@
 package me.skinnynoonie.gamewatcher.config;
 
-import me.skinnynoonie.gamewatcher.util.Checks;
+import me.skinnynoonie.gamewatcher.util.Arguments;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,7 +16,7 @@ public final class LogPathConfig implements Config {
     }
 
     public @NotNull Path getPath() {
-        Checks.legalState(this.isValid(), "the config is invalid, values can not be read.");
+        Arguments.legal(this.isValid(), "the config is invalid");
 
         return Path.of(this.path);
     }
